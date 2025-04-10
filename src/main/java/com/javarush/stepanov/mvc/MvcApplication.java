@@ -33,10 +33,10 @@ public class MvcApplication {
                 createTestUser(2L, "user2", "password2", "Jane", "Smith"),
                 createTestUser(3L, "user3", "password3", "Bob", "Johnson"),
                 createTestUser(4L, "user4", "password4", "Alice", "Williams"),
-                createTestUser(5L, "user5", "password5", "Mike", "Brown"),
+                createTestUser(5L, "user5", "password5", "John", "Brown"),
                 createTestUser(6L, "user6", "password6", "Sarah", "Davis"),
                 createTestUser(7L, "user7", "password7", "Tom", "Miller"),
-                createTestUser(8L, "user8", "password8", "Emily", "Wilson"),
+                createTestUser(8L, "user8", "password8", "John", "Wilson"),
                 createTestUser(9L, "user9", "password9", "David", "Taylor"),
                 createTestUser(10L, "user10", "password10", "Lisa", "Anderson")
         );
