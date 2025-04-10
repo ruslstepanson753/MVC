@@ -1,0 +1,177 @@
+Версионирование API
+Текущая версия: v1.1.0
+
+Уровень готовности: Level 3 (HATEOAS)
+
+Поддерживаемые форматы:
+
+application/json
+
+application/hal+json
+
+Базовый URL
+Copy
+https://api.example.com/api/v1/creators
+Основные изменения в v1.1.0
+Полная реализация HATEOAS
+
+Расширенные возможности пагинации
+
+Улучшенная фильтрация
+
+Автоматическая документация через Swagger UI
+
+Endpoints
+1. Получение списка создателей с пагинацией
+GET /paged
+
+Параметры запроса:
+Параметр	Тип	Обязательный	По умолчанию	Описание
+page	int	Нет	1	Номер страницы (начиная с 1)
+size	int	Нет	10	Количество элементов на странице
+sort_by	string	Нет	"id::asc"	Поле и направление сортировки в формате поле::направление (поддерживаемые поля: id, firstname, lastname)
+Пример запроса:
+http
+Copy
+GET /api/v1/creators/paged?page=2&size=5&sort_by=firstname::desc
+Accept: application/hal+json
+Пример ответа (HATEOAS):
+json
+Copy
+{
+    "_embedded": {
+        "creatorOutList": [
+            {
+                "id": 5,
+                "login": "user5",
+                "firstname": "Mike",
+                "lastname": "Brown",
+                "_links": {
+                    "self": { "href": "https://api.example.com/api/v1/creators/5" },
+                    "same-firstname": { "href": "https://api.example.com/api/v1/creators/firstnames/Mike" }
+                }
+            }
+        ]
+    },
+    "_links": {
+        "first": { "href": "https://api.example.com/api/v1/creators/paged?page=1&size=5" },
+        "prev": { "href": "https://api.example.com/api/v1/creators/paged?page=1&size=5" },
+        "self": { "href": "https://api.example.com/api/v1/creators/paged?page=2&size=5" },
+        "next": { "href": "https://api.example.com/api/v1/creators/paged?page=3&size=5" },
+        "last": { "href": "https://api.example.com/api/v1/creators/paged?page=4&size=5" },
+        "create": { "href": "https://api.example.com/api/v1/creators", "type": "POST" }
+    },
+    "page": {
+        "size": 5,
+        "totalElements": 17,
+        "totalPages": 4,
+        "number": 2
+    }
+}
+2. Поиск создателей по имени
+GET /firstnames/{firstname}
+
+Параметры запроса:
+Параметр	Тип	Обязательный	По умолчанию	Описание
+page	int	Нет	0	Номер страницы (0-based)
+size	int	Нет	10	Размер страницы
+Пример запроса:
+http
+Copy
+GET /api/v1/creators/firstnames/John?page=0&size=3
+Accept: application/hal+json
+Пример ответа:
+json
+Copy
+{
+    "_embedded": {
+        "creatorOutList": [
+            {
+                "id": 1,
+                "login": "john_doe",
+                "firstname": "John",
+                "lastname": "Doe",
+                "_links": {
+                    "self": { "href": "https://api.example.com/api/v1/creators/1" }
+                }
+            }
+        ]
+    },
+    "_links": {
+        "self": { "href": "https://api.example.com/api/v1/creators/firstnames/John?page=0&size=3" },
+        "all-creators": { "href": "https://api.example.com/api/v1/creators" }
+    }
+}
+3. Получение конкретного создателя
+GET /{id}
+
+Пример ответа (HATEOAS):
+json
+Copy
+{
+    "id": 1,
+    "login": "john_doe",
+    "firstname": "John",
+    "lastname": "Doe",
+    "_links": {
+        "self": { "href": "https://api.example.com/api/v1/creators/1" },
+        "creators": { "href": "https://api.example.com/api/v1/creators" },
+        "update": { "href": "https://api.example.com/api/v1/creators/1", "type": "PUT" },
+        "delete": { "href": "https://api.example.com/api/v1/creators/1", "type": "DELETE" }
+    }
+}
+Автоматическая документация (Swagger)
+Для автоматической генерации документации добавьте зависимости:
+
+xml
+Copy
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+    <version>2.1.0</version>
+</dependency>
+Run HTML
+Документация будет доступна по адресу:
+
+Copy
+http://localhost:8080/swagger-ui.html
+Пример конфигурации Swagger:
+
+java
+Copy
+@Configuration
+public class OpenApiConfig {
+
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+                .info(new Info()
+                        .title("Creator Service API")
+                        .version("v1.1.0")
+                        .description("API для управления создателями с поддержкой HATEOAS")
+                        .license(new License().name("Apache 2.0")))
+                .externalDocs(new ExternalDocumentation()
+                        .description("Полная документация")
+                        .url("https://api.example.com/docs"));
+    }
+}
+Уровень 3 REST (HATEOAS)
+Реализованы все требования уровня 3:
+
+Гипермедиа - все ответы содержат ссылки на связанные ресурсы
+
+Самоописательные сообщения - клиент может обнаруживать возможности API через ссылки
+
+Единый интерфейс - стандартные HTTP методы и коды состояния
+
+Кэширование - поддержка заголовков Cache-Control
+
+Клиент-серверная архитектура - полное разделение клиента и сервера
+
+Пример обнаружения возможностей:
+
+Клиент делает GET запрос к корневому URL
+
+Получает ссылки на доступные ресурсы
+
+Переходит по нужным ссылкам, используя предоставленные метаданные

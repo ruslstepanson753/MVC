@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
+//swagger http://localhost:24110/swagger-ui/index.html#/
 @RestController
 @RequestMapping("/api/v2/creators")
 public class CreatorController {
