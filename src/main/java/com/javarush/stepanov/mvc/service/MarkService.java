@@ -71,5 +71,4 @@ public class MarkService {
         repo.deleteById(id);
         return mapper.out(mark);
     }
-
 }

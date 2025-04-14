@@ -19,3 +19,9 @@ CREATE TABLE tbl_mark (
                           id BIGSERIAL PRIMARY KEY,
                           name VARCHAR(32) NOT NULL
 );
+
+CREATE TABLE notice (
+                        id BIGSERIAL PRIMARY KEY,
+                        story_id BIGINT NOT NULL,
+                        content TEXT NOT NULL
+);
