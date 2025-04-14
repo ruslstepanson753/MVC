@@ -1,56 +1,61 @@
 package com.javarush.stepanov.mvc.controller;
 
-
 import com.javarush.stepanov.mvc.model.story.Story;
 import com.javarush.stepanov.mvc.service.StoryService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("api/v1.0/stories")
+@RequestMapping("/api/v1.0/stories")
 public class StoryController {
 
-    private final StoryService storyService;
+    private final StoryService service;
+
+    @GetMapping("/{id}")
+    public Story.Out getStoryById(@PathVariable Long id) {
+        return service.get(id);
+
+    }
 
     @GetMapping
-    public Collection<Story.Out> getAll() {
-        return storyService.getAll();
+    @ResponseStatus(HttpStatus.OK)
+    public List<Story.Out> getAllStorys2(
+    )   {
+        return service.getAll();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Story.Out create(@RequestBody @Valid Story.In inputDto) {
-        return storyService.create(inputDto);
+    public Story.Out createStory(@RequestBody @Valid Story.In input) {
+        try {
+            return service.create(input);
+        }catch (NoSuchElementException e){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
     }
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public Story.Out update(@RequestBody @Valid Story.In inputDto) {
+    public Story.Out  updateStory(@RequestBody @Valid Story.In input) {
         try {
-            return storyService.update(inputDto);
+            return service.update(input);
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
 
-    @GetMapping("/{id}")
-    public Story.Out read(@PathVariable long id) {
-        return storyService.get(id);
-    }
-
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable long id) {
-        boolean delete = storyService.delete(id);
-        if (!delete) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<?> deleteStory(@PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

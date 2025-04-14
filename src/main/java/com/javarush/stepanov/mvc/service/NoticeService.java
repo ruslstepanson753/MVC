@@ -1,9 +1,8 @@
 package com.javarush.stepanov.mvc.service;
 
 import com.javarush.stepanov.mvc.mapper.NoticeDto;
-import com.javarush.stepanov.mvc.mapper.StoryDto;
 import com.javarush.stepanov.mvc.model.notice.Notice;
-import com.javarush.stepanov.mvc.repository.impl.NoticeRepoImpl;
+import com.javarush.stepanov.mvc.repository.impl.NoticeRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +11,7 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class NoticeService {
-    private final NoticeRepoImpl repoImpl;
+    private final NoticeRepo repoImpl;
     private final NoticeDto mapper;
 
     public List<Notice.Out> getAll() {

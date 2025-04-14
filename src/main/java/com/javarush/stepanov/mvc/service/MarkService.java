@@ -2,7 +2,7 @@ package com.javarush.stepanov.mvc.service;
 
 import com.javarush.stepanov.mvc.mapper.MarkDto;
 import com.javarush.stepanov.mvc.model.mark.Mark;
-import com.javarush.stepanov.mvc.repository.impl.MarkRepoImpl;
+import com.javarush.stepanov.mvc.repository.impl.MarkRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class MarkService {
-    private final MarkRepoImpl repoImpl;
+    private final MarkRepo repoImpl;
     private final MarkDto mapper;
 
     public List<Mark.Out> getAll() {

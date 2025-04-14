@@ -1,5 +1,6 @@
 package com.javarush.stepanov.mvc.model.story;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -9,11 +10,15 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+@Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "tbl_story")
 public class Story {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     Long creatorId;
     String title;
