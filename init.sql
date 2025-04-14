@@ -14,3 +14,8 @@ CREATE TABLE tbl_story (
                        created TIMESTAMP WITHOUT TIME ZONE,
                        modified TIMESTAMP WITHOUT TIME ZONE
 );
+
+CREATE TABLE tbl_mark (
+                          id BIGSERIAL PRIMARY KEY,
+                          name VARCHAR(32) NOT NULL
+);
