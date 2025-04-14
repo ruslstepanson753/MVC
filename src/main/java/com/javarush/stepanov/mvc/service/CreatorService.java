@@ -5,13 +5,11 @@ import com.javarush.stepanov.mvc.model.creator.Creator;
 import com.javarush.stepanov.mvc.repository.impl.CreatorRepoImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @AllArgsConstructor
@@ -22,58 +20,58 @@ public class CreatorService {
 
     public List<Creator.Out> getAll() {
         return repoImpl
-                .getAll()
+                .findAll()
+                .stream()
                 .map(mapper::out)
                 .toList();
     }
 
+    public List<Creator.Out> getAll(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        return repoImpl.
+                findAll(pageable)
+                .map(mapper::out)
+                .getContent();
+    }
+
     public Creator.Out get(Long id) {
         return repoImpl
-                .get(id)
+                .findById(id)
                 .map(mapper::out)
                 .orElseThrow();
     }
 
     public Creator.Out create(Creator.In input) {
-        return repoImpl
-                .create(mapper.in(input))
-                .map(mapper::out)
-                .orElseThrow();
+        Creator creator = mapper.in(input);
+        List<Creator> list= repoImpl.findAll();
+        for(Creator creatorInList : list ){
+            if((creatorInList.getId().equals(creator.getId()))||(creatorInList.getLogin().equals(creator.getLogin()))){
+                throw new NoSuchElementException();
+            }
+        }
+        return mapper.out(
+                repoImpl.save(creator));
     }
 
     public Creator.Out update(Creator.In input) {
-        return repoImpl
-                .update(mapper.in(input))
-                .map(mapper::out)
-                .orElseThrow();
+        // 1. Находим существующую запись
+        Creator existing = repoImpl.findById(input.getId())
+                .orElseThrow(() -> new NoSuchElementException("Creator not found with id: " + input.getId()));
+
+        // 2. Обновляем поля (используя маппер или вручную)
+        Creator updated = mapper.in(input); // или частичное обновление:
+         existing.setLogin(input.getLogin());
+         existing.setPassword(input.getPassword());
+         existing.setFirstname(input.getFirstname());
+         existing.setLastname(input.getLastname());
+
+
+        // 3. Сохраняем обновленную сущность
+        return mapper.out(repoImpl.save(updated));
     }
 
-    public boolean delete(Long id) {
-        return repoImpl.delete(id);
+    public void delete(Long id) {
+        repoImpl.deleteById(id);
     }
 
-    public Page<Creator.Out> getAllPaged(int page, int size, String sortBy) {
-        // Parse the sort string (format: "property::direction")
-        String[] sortParams = sortBy.split("::");
-        String property = sortParams[0];
-        String direction = sortParams.length > 1 ? sortParams[1] : "asc";
-
-        Sort sort = direction.equalsIgnoreCase("desc") ?
-                Sort.by(property).descending() :
-                Sort.by(property).ascending();
-
-        Pageable pageable = PageRequest.of(page, size, sort);
-
-        return repoImpl.findAll(pageable).map((x)->mapper.out(x));
-    }
-
-    public Collection<Creator.Out> getCreatorsByFirstname(String firstname) {
-        System.out.println("Searching for creators with firstname: " + firstname);
-        List<Creator.Out> result = repoImpl
-                .getCreatorsByName(firstname)
-                .map(mapper::out)
-                .toList();
-        System.out.println("Found " + result.size() + " creators");
-        return result;
-    }
 }
