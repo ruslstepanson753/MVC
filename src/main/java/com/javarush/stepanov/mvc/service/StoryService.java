@@ -110,11 +110,6 @@ public class StoryService {
     @Transactional
     public void delete(Long id) {
         Story story = storyRepo.findById(id).orElseThrow(()-> new NoSuchElementException("Story not found with id: " + id));
-        Set<StoryMark> marks = story.getMarks();
-        for (StoryMark storyMark : marks) {
-            markRepo.delete(storyMark.getMark());
-            storyMarkRepo.delete(storyMark);
-        }
         storyRepo.deleteById(id);
     }
 

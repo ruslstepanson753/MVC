@@ -19,11 +19,11 @@ public class StoryMark {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY ,cascade = CascadeType.ALL)
     @JoinColumn(name = "story_id")  // Внешний ключ на Story
     private Story story;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "mark_id")   // Внешний ключ на Mark
     private Mark mark;   // Ссылка на сущность Mark, а не Long
 
