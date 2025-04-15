@@ -10,26 +10,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
-public interface StoryMapper { // Лучше использовать "Mapper" вместо "Dto" в имени
+public interface StoryMapper {
 
-    // Изменение: уберем @Context из сигнатуры метода toEntity и передадим отдельно при вызове
     @Mapping(target = "marks", ignore = true)
     Story toEntity(Story.In request);
-
-    // Метод, который будет вызываться извне и который будет использовать контекст
-    default Story toEntityWithMarks(Story.In request, MarkRepo markRepo) {
-        Story story = toEntity(request);
-
-        // Непосредственно применяем логику из afterMapping прямо здесь
-        if (request.getMarks() != null && !request.getMarks().isEmpty()) {
-            Set<Mark> marks = request.getMarks().stream()
-                    .map(name -> getOrCreateMark(name, markRepo))
-                    .collect(Collectors.toSet());
-            story.setMarks(marks);
-        }
-
-        return story;
-    }
 
     @Mapping(target = "marks", expression = "java(mapMarksToNames(story.getMarks()))")
     Story.Out toOut(Story story);
@@ -41,12 +25,5 @@ public interface StoryMapper { // Лучше использовать "Mapper" �
         return marks.stream()
                 .map(Mark::getName)
                 .collect(Collectors.toSet());
-    }
-
-    private Mark getOrCreateMark(String markName, MarkRepo markRepo) {
-        return markRepo.findByName(markName)
-                .orElseGet(() -> markRepo.save(
-                        Mark.builder().name(markName).build()
-                ));
     }
 }

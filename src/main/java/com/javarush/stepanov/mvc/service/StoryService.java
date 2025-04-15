@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class StoryService {
-
     private final StoryRepo storyRepo;
     private final MarkRepo markRepo;
     private final StoryMapper mapper;
@@ -52,17 +51,34 @@ public class StoryService {
 
     @Transactional
     public Story.Out createStory(Story.In request) {
-        Story story = mapper.toEntityWithMarks(request, markRepo);
+        Story story = toEntityWithMarks(request, markRepo);
         Story savedStory = storyRepo.save(story);
         return mapper.toOut(savedStory);
     }
 
+    private Story toEntityWithMarks(Story.In request, MarkRepo markRepo) {
+        Story story = mapper.toEntity(request);
 
+        if (request.getMarks() != null && !request.getMarks().isEmpty()) {
+            Set<Mark> marks = request.getMarks().stream()
+                    .map(name -> getOrCreateMark(name, markRepo))
+                    .collect(Collectors.toSet());
+            story.setMarks(marks);
+        }
+
+        return story;
+    }
+
+    private Mark getOrCreateMark(String markName, MarkRepo markRepo) {
+        return markRepo.findByName(markName)
+                .orElseGet(() -> markRepo.save(
+                        Mark.builder().name(markName).build()
+                ));
+    }
 
     @Transactional
     public void delete(Long id) {
         Story story = storyRepo.findById(id).orElseThrow(()-> new NoSuchElementException("Story not found with id: " + id));
         storyRepo.deleteById(id);
     }
-
 }

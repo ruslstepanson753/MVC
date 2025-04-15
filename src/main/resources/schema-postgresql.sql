@@ -36,11 +36,19 @@ CREATE TABLE IF NOT EXISTS tbl_story (
 );
 
 -- 8. Таблица уведомлений
-CREATE TABLE IF NOT EXISTS notice (
+CREATE TABLE IF NOT EXISTS tbl_notice (
                                       id BIGSERIAL PRIMARY KEY,
                                       story_id BIGINT,
                                       content TEXT,
                                       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE story_mark (
+                            story_id BIGINT NOT NULL,
+                            mark_id BIGINT NOT NULL,
+                            PRIMARY KEY (story_id, mark_id),
+                            FOREIGN KEY (story_id) REFERENCES tbl_story(id) ON UPDATE CASCADE,
+                            FOREIGN KEY (mark_id) REFERENCES tbl_mark(id) ON UPDATE CASCADE
 );
 
 -- 9. Таблица связей между историями и метками
