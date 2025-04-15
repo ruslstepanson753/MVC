@@ -9,7 +9,14 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    url: jdbc:postgresql://localhost:5432/distcomp
+    user: postgres
+    password: postgres
+    default-schema: public
 server:
   port: 24110
 
