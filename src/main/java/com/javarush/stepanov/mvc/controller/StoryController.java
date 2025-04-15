@@ -36,26 +36,10 @@ public class StoryController {
     @ResponseStatus(HttpStatus.CREATED)
     public Story.Out createStory(@RequestBody @Valid Story.In input) {
         try {
-            return service.create(input);
+            return service.createStory(input);
         }catch (NoSuchElementException e){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
     }
 
-    @PutMapping
-    @ResponseStatus(HttpStatus.OK)
-    public Story.Out  updateStory(@RequestBody @Valid Story.In input) {
-        try {
-            return service.update(input);
-        } catch (NoSuchElementException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<?> deleteStory(@PathVariable Long id) {
-        service.delete(id);
-        return ResponseEntity.noContent().build();
-    }
 }

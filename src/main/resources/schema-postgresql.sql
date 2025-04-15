@@ -1,5 +1,5 @@
 -- 1. Создаём базу данных (выполняется отдельно!)
-CREATE DATABASE distcomp;
+-- CREATE DATABASE IF NOT EXISTS distcomp;
 
 -- 2. Подключаемся к базе (если в psql)
 -- \c distcomp
@@ -44,9 +44,3 @@ CREATE TABLE IF NOT EXISTS notice (
 );
 
 -- 9. Таблица связей между историями и метками
-CREATE TABLE IF NOT EXISTS tbl_storymark (
-                                             id BIGSERIAL PRIMARY KEY,
-                                             story_id BIGINT,
-                                             mark_id BIGINT,
-                                             UNIQUE(story_id, mark_id)
-);

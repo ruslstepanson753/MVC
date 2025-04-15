@@ -7,11 +7,10 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Repository
 public interface MarkRepo extends JpaRepository<Mark,Long> {
-    @Transactional(readOnly = true)
-    @Query("SELECT CASE WHEN COUNT(m) > 0 THEN true ELSE false END FROM Mark m WHERE m.name = :name")
-    boolean existsByName(@Param("name") String name);
 
-    Mark findByName(String markName);
+    Optional<Mark> findByName(String markName);
 }
