@@ -55,15 +55,8 @@ public class StoryService {
 
     @Transactional
     public Story.Out create(Story.In input) {
-        // 1. Проверка на существование (бросаем более подходящее исключение)
-        Story story2 = (Story) storyRepo.findByTitle(input.getTitle()).orElse(null);
-        if (story2 != null) {
-            throw new IllegalArgumentException("Story with title '" + input.getTitle() + "' already exists");
-        }
-        Creator creator2 = (Creator) creatorRepo.findById(input.getCreatorId()).orElse(null);
-        if (creator2 == null){
-           throw  new NoSuchElementException();
-        }
+        chekStory(input);
+        chekCreator(input);
         Set<String> marksString = input.getMarks();
         Story story = mapper.in(input);
         story.setCreated(LocalDateTime.now());
@@ -83,6 +76,20 @@ public class StoryService {
         Story.Out result = mapper.out(storyRepo.save(storyWithId));
         result.setMarks(marksString);
         return result;    }
+
+    private void chekCreator(Story.In input) {
+        Creator creator2 = (Creator) creatorRepo.findById(input.getCreatorId()).orElse(null);
+        if (creator2 == null){
+           throw  new NoSuchElementException();
+        }
+    }
+
+    private void chekStory(Story.In input) {
+        Story story2 = (Story) storyRepo.findByTitle(input.getTitle()).orElse(null);
+        if (story2 != null) {
+            throw new IllegalArgumentException("Story with title '" + input.getTitle() + "' already exists");
+        }
+    }
 
     private void saveStoryMark(Mark markWithId, Story storyWithId) {
         StoryMark storyMark =  StoryMark
