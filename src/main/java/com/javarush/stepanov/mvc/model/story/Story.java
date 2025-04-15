@@ -1,8 +1,9 @@
 package com.javarush.stepanov.mvc.model.story;
 
 import com.javarush.stepanov.mvc.model.mark.Mark;
-import com.javarush.stepanov.mvc.model.storymark.StoryMark;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -23,37 +24,57 @@ import java.util.Set;
 public class Story {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    Long creatorId;
-    String title;
-    String content;
-    LocalDateTime created;
-    LocalDateTime modified;
+    private Long id;
 
-    @OneToMany(mappedBy = "story", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Long creatorId;
+
+    @Size(min = 2, max = 64)
+    private String title;
+
+    @Size(min = 4, max = 2048)
+    private String content;
+
+    private LocalDateTime created;
+    private LocalDateTime modified;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "story_mark",
+            joinColumns = @JoinColumn(name = "story_id"),
+            inverseJoinColumns = @JoinColumn(name = "mark_id")
+    )
     @Builder.Default
-    private Set<StoryMark> marks = new HashSet<>();
+    private Set<Mark> marks = new HashSet<>();
 
-    public void addMarks(StoryMark storyMark){
-        marks.add(storyMark);
+    @PrePersist
+    protected void onCreate() {
+        created = LocalDateTime.now();
+        modified = LocalDateTime.now();
     }
 
+    @PreUpdate
+    protected void onUpdate() {
+        modified = LocalDateTime.now();
+    }
+
+    // DTO классы
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class In {
         @Positive
-        Long id;
-        @Positive
-        Long creatorId;
+        private Long creatorId;
+
+        @NotBlank
         @Size(min = 2, max = 64)
-        String title;
-        @Size(min = 4, max = 2048)
-        String content;
-        LocalDateTime created;
-        LocalDateTime modified;
-        Set<String> marks; // Имена меток
+        private String title;
+
+        @NotBlank @Size(min = 4, max = 2048)
+        private String content;
+
+        @NotEmpty
+        private Set<String> marks;
     }
 
     @Data
@@ -61,24 +82,12 @@ public class Story {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Out {
-        Long id;
-        Long creatorId;
-        String title;
-        String content;
-        LocalDateTime created;
-        LocalDateTime modified;
-        Set<String> marks; // Имена связанных меток
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Story)) return false;
-        return id != null && id.equals(((Story) o).getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
+        private Long id;
+        private Long creatorId;
+        private String title;
+        private String content;
+        private LocalDateTime created;
+        private LocalDateTime modified;
+        private Set<String> marks;
     }
 }
