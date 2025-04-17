@@ -37,7 +37,7 @@ public class NoticeService {
     }
 
     public Notice.Out get(Long id) {
-        return new Notice.Out();
+       return null;
     }
 
     public Notice.Out create(Notice.In input) {
