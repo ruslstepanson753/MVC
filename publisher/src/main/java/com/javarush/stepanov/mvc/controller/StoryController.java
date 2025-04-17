@@ -20,9 +20,9 @@ public class StoryController {
     private final StoryService service;
 
     @GetMapping("/{id}")
-    public Story.Out getStoryById(@PathVariable Long id) {
+    public Story.Out getStoryById(@PathVariable("id") Long id) {
+        System.out.println();
         return service.get(id);
-
     }
 
     @GetMapping
