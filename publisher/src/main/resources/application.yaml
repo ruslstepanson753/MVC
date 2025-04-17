@@ -1,6 +1,6 @@
 spring:
   application:
-    name: MVC
+    name: publisher
   datasource:
     url: jdbc:postgresql://localhost:5432/distcomp
     username: postgres
