@@ -62,15 +62,17 @@ public class StoryService {
         story.setCreated(LocalDateTime.now());
         story.setModified(LocalDateTime.now());
         Story storyWithId = storyRepo.save(story);
-        for (String markName : marksString) {
-            System.out.println();
-            if(!markRepo.existsByName(markName)){
-                Mark mark = Mark.builder().name(markName).build();
-                Mark markWithId = markRepo.save(mark);
-                saveStoryMark(markWithId, storyWithId);
-            }else {
-                Mark markWithId = markRepo.findByName(markName);
-                saveStoryMark(markWithId, storyWithId);
+        if(marksString!=null) {
+            for (String markName : marksString) {
+                System.out.println();
+                if(!markRepo.existsByName(markName)){
+                    Mark mark = Mark.builder().name(markName).build();
+                    Mark markWithId = markRepo.save(mark);
+                    saveStoryMark(markWithId, storyWithId);
+                }else {
+                    Mark markWithId = markRepo.findByName(markName);
+                    saveStoryMark(markWithId, storyWithId);
+                }
             }
         }
         Story.Out result = mapper.out(storyRepo.save(storyWithId));

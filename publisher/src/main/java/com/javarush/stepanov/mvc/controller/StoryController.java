@@ -21,14 +21,13 @@ public class StoryController {
 
     @GetMapping("/{id}")
     public Story.Out getStoryById(@PathVariable("id") Long id) {
-        System.out.println();
         return service.get(id);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<Story.Out> getAllStorys2(
-    )   {
+    ) {
         return service.getAll();
     }
 
@@ -37,14 +36,14 @@ public class StoryController {
     public Story.Out createStory(@RequestBody @Valid Story.In input) {
         try {
             return service.create(input);
-        }catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
     }
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public Story.Out  updateStory(@RequestBody @Valid Story.In input) {
+    public Story.Out updateStory(@RequestBody @Valid Story.In input) {
         try {
             return service.update(input);
         } catch (NoSuchElementException e) {
@@ -58,4 +57,6 @@ public class StoryController {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+
 }
