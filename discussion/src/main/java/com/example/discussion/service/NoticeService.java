@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -39,7 +40,8 @@ public class NoticeService {
     }
 
     public Notice.Out get(Long id) {
-       return null;
+        Optional<Notice> notice = repo.findOneByKeyId(id);
+        return mapper.out(notice.orElseThrow(() -> new NoSuchElementException()));
     }
 
     public Notice.Out create(Notice.In input) {

@@ -17,7 +17,7 @@ import java.util.NoSuchElementException;
 @Slf4j
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/notices")  // Изменил путь для соответствия запросам от 24110
+@RequestMapping("/api/v1.0/notices")  // Изменил путь для соответствия запросам от 24110
 public class NoticeController {
 
     private final NoticeService service;
@@ -30,10 +30,10 @@ public class NoticeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Notice.Out> getNoticeById(@PathVariable Long id) {
+    public Notice.Out getNoticeById(@PathVariable Long id) {
         log.info("Получение уведомления с id: {}", id);
         try {
-            return ResponseEntity.ok(service.get(id));
+            return service.get(id);
         } catch (NoSuchElementException e) {
             log.warn("Уведомление с id {} не найдено", id);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Уведомление не найдено");
