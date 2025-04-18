@@ -36,6 +36,7 @@ public class NoticeController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Notice.Out createNotice(@RequestBody @Valid Notice.In input) {
+        System.out.println();
         try {
             return service.create(input);
         }catch (NoSuchElementException e){

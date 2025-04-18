@@ -11,9 +11,14 @@ import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @PrimaryKeyClass
 public class NoticeKey implements Serializable {
+    public NoticeKey(String country, Long id, Long storyId) {
+        this.country = country;
+        this.id = id;
+        this.storyId = storyId;
+    }
+
     @PrimaryKeyColumn(name = "country", type = PrimaryKeyType.PARTITIONED)
     private String country;
 

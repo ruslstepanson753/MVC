@@ -4,6 +4,7 @@ package com.example.discussion.service;
 
 import com.example.discussion.mapper.NoticeDto;
 import com.example.discussion.model.Notice;
+import com.example.discussion.model.NoticeKey;
 import com.example.discussion.repo.NoticeRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +18,7 @@ import java.util.NoSuchElementException;
 @AllArgsConstructor
 public class NoticeService {
 
+    private final IdGeneratorService idGeneratorService;
     private final NoticeRepo repo;
     private final NoticeDto mapper;
 
@@ -41,7 +43,12 @@ public class NoticeService {
     }
 
     public Notice.Out create(Notice.In input) {
+        String country = "RU";
+        Long id = idGeneratorService.getNextId();
+        Long storyId = input.getStoryId();
+        NoticeKey noticeKey = new NoticeKey(country,id,storyId);
         Notice notice = mapper.in(input);
+        notice.setKey(noticeKey);
         return mapper.out(
                 repo.save(notice));
     }

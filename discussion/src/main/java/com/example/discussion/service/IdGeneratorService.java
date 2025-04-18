@@ -14,7 +14,8 @@ public class IdGeneratorService {
         this.cassandraOperations = cassandraOperations;
     }
 
-    public Long getNextId(String tableName) {
+    public Long getNextId() {
+        String tableName = "tbl_notice";
         // Создаем параметризованный запрос для обновления счетчика
         SimpleStatement updateStatement = SimpleStatement.builder(
                         "UPDATE counters SET next_id = next_id + 1 WHERE table_name = ?")
