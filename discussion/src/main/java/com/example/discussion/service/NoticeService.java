@@ -56,9 +56,17 @@ public class NoticeService {
     }
 
     public Notice.Out update(Notice.In input) {
-        Notice notice = mapper.in(input);
-        return mapper.out(
-                repo.save(notice));
+        String country = "RU";
+        Long id = input.getId();
+        Long storyId = input.getStoryId();
+        String content = input.getContent();
+        NoticeKey noticeKey = new NoticeKey(country,id,storyId);
+        Notice noticeOld = repo.findOneByKeyId(id).orElseThrow(() -> new NoSuchElementException());
+        Notice newNotice = new Notice();
+        newNotice.setKey(noticeKey);
+        newNotice.setContent(content);
+        repo.delete(noticeOld);
+        return mapper.out(repo.save(newNotice));
     }
 
     public void delete(Long id) {

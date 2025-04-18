@@ -39,7 +39,7 @@ public class Notice {
     // DTO классы остаются без изменений
     @Data @Builder @NoArgsConstructor @AllArgsConstructor
     public static class In {
-        //@Positive Long id;
+        @Positive Long id;
         @Positive Long storyId;
         @Size(min = 4, max = 2048) String content;
     }

@@ -84,11 +84,19 @@ public class NoticeController {
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     public Notice.Out  updateNotice(@RequestBody @Valid Notice.In input) {
-        try {
-            return service.update(input);
-        } catch (NoSuchElementException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+        return webClient.put()
+                .uri("/api/v1.0/notices")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(input)
+                .retrieve()
+                .bodyToMono(Notice.Out.class)
+                .onErrorMap(e -> {
+                    log.error("Forwarding error", e);
+                    return new ResponseStatusException(
+                            HttpStatus.BAD_GATEWAY,
+                            "Remote service error: " + e.getMessage()
+                    );
+                }).block();
     }
 
     @DeleteMapping("/{id}")
