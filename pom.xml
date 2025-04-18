@@ -107,6 +107,31 @@
                     <outputChangeLogFile>src/main/resources/db/changelog/changes/initial-schema.yaml</outputChangeLogFile>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>run-publisher</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>com.example.publisher.PublisherApplication</mainClass>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>run-discussion</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>com.example.discussion.DiscussionApplication</mainClass>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
+
 </project>
